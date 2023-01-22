@@ -1,0 +1,19 @@
+{
+  "name": "biciback",
+  "version": "1.0.0",
+  "description": "biciapp backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/AxlMax/biciBack.git"
+  },
+  "author": "Diego Axsel Garcia",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AxlMax/biciBack/issues"
+  },
+  "homepage": "https://github.com/AxlMax/biciBack#readme"
+}
