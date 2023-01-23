@@ -1,4 +1,7 @@
 const jose = require('jose')
+const colors = require('colors')
+
+colors.enable()
 
 const OAuth = (req, res, next) => {
 
@@ -11,11 +14,22 @@ const OAuth = (req, res, next) => {
 
         jose.jwtVerify(token, secret)
             .then(data => next())
-            .catch((error) => res.status(400).send("token invalido"))
+            .catch((error) => {
+
+                if(Boolean(process.env.LOG)){
+                    console.log(colors.red("[ERROR] invalid or expired token"))
+                }
+
+                res.status(400).send("token invalido")
+            })
 
     }catch(e){
-        console.log(e)
         if(req.header("Authorization") == undefined){
+
+            if(Boolean(process.env.LOG)){
+                console.log(colors.red("[ERROR] token not showing"))
+            }
+            
             res.status(400).send("Token no presentado")
         }else{
             res.status(500).send("error en el servidor")

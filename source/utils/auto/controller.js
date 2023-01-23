@@ -1,25 +1,35 @@
-const { model, Schema } = require('mongoose')
+const {Schema, default: mongoose } = require('mongoose')
 const Error = require('../error/errorHandler')
 const ERRORMSG = "error CONTROLADOR"
 
-const create = (args) => {
-    const {model, body, res} = args
+/**
+ * 
+ * @param {mongoose.model} model modelo con el que se crea el registro
+ * @param {object} body informacion que se ingresa
+ * @param {string} res respuesta
+ * @param {string} logInfo informacion de mas para el log
+ */
+
+const create = (model, body, res, logInfo) => {
 
     if(process.env.LOG == 'true'){
-        console.log(`Create ${body}`)
+        console.log(`Create ${logInfo} ${body}`)
     }
 
     const document = new model(body)
     Error.errorSaving(document, res)
 
 }
-
-const find = (args) => {
-    const {model, id, res} = args
+/**
+ * 
+ * @param {mongoose.model} model modelo con que se busca el registro
+ * @param {string} id id con el que se registro en la db 
+ * @param {*} res respuesta
+ */
+const find = (model, id, res) => {
     console.log(id)
     model.findById(id,(err, doc) => {Error.errorHandler(err, res, ERRORMSG, doc)})
 }
-
 
 const Update = (args) => {
     const {model, body, id, res , msg} = args

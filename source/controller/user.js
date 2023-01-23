@@ -1,8 +1,12 @@
 const userModel = require('../models/user')
-
+const color = require('colors')
 const hash = require("../utils/bcrypt/hashPasswd")
 
+color.enable()
+
 const Cuser = (body, res) => {
+
+    console.log(color.yellow(`[QUERY] Create user ${body.email}`))
 
     const user = new userModel(body)
     var err = user.joiValidate(body)
@@ -11,8 +15,19 @@ const Cuser = (body, res) => {
         res.status(400).send(err.error.details) 
     }else{
         user.save()
-        .then (() => res.status(200).send(user))
-        .catch(() => res.status(500).send("usuario ya existe"))
+        .then (() => {
+            res.status(200).send(user)
+            if(Boolean(process.env.LOG)){
+                console.log(color.green("[OK] user created"))
+            }   
+        })
+        .catch(() => {
+            res.status(500).send("usuario ya existe")
+
+            if(Boolean(process.env.LOG)){
+                console.log(color.red("[ERROR] user already exist"))
+            }  
+        })
     }
 }
 
@@ -27,6 +42,10 @@ const Ruser = (res) => {
 }
 
 const Uuser = async (id, body, res) => {
+
+    if(Boolean(process.env.LOG)){
+        console.log(color.yellow("[QUERY] update user"))
+    }
     
     if(body.passwd != undefined){
         hash.hashPasswd(body.passwd).then((data) => {
@@ -48,6 +67,11 @@ const Uuser = async (id, body, res) => {
 }
 
 const Duser = (id, res) => {
+
+    if(Boolean(process.env.LOG)){
+        console.log(color.yellow("[QUERY] delete user"))
+    }
+
     userModel.findByIdAndDelete(
         id,
         (error, data) => res.send(data)

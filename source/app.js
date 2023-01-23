@@ -4,6 +4,11 @@ var express    = require("express");
 var bodyParser = require("body-parser");
 const dbConnect = require("./config/mongo");
 const cors = require('cors')
+const colors = require('colors')
+
+console.log()
+
+colors.enable()
 
 var app = express();
 
@@ -16,5 +21,6 @@ app.use(cors({origin:true,credentials: true}))
 app.use("/api", require("./routes"))
 
 app.listen(process.env.PORT, () => {
-    console.log("app running on port " + process.env.PORT)
+    console.log()
+    console.log(colors.green(`[OK] app running on ${process.env.PORT}`))
 })

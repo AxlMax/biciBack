@@ -18,7 +18,6 @@ const Uuser = (req, res) => {
 
 const Duser = (req, res) => {
     const query = url.parse(req.url, true).query
-    console.log(query.id)
     controllerUser.Duser(query.id, res)
 }
 

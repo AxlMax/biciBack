@@ -1,8 +1,8 @@
 indexLogin = [
     {
         method  : "post",
-        service : "oauth"
+        service : "oauth",
     }
 ]
 
-module.exports = indexLogin
+module.exports = {indexer:indexLogin, path:"login"}

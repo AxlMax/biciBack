@@ -1,5 +1,8 @@
 require("dotenv").config() // saca la informacion de las varibles de .env la variables process
 const mongoose = require('mongoose') // libreria para la conexion con mongo
+const colors = require("colors")
+
+colors.enable()
 
 const dbConnect = () => {
     /*
@@ -27,9 +30,9 @@ const dbConnect = () => {
     //  arrow function callback que se ejecuta cuando se conecta a la base de datos __init__
     const callback = (err, res) => {
         if(!err){
-            console.log("****** Conexion exitosa *******")
+            console.log(colors.green(`[OK] success connection to ${DB_URI}`))
         }else{
-            console.log("****** error en la conexion *****")
+            console.log(colors.green(`[ERROR] error connection to ${DB_URI}`))
             console.log(err)
         }
     }

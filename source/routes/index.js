@@ -5,8 +5,7 @@ const colors = require('colors')
 const router = express.Router()
 colors.enable()
 
-getFileNames(process.env.PROJECT_DIR + '/indexers').forEach(name => {
-    console.log(colors.yellow(name)) 
+getFileNames(process.env.PROJECT_DIR + '/indexers').forEach(name => { 
     router.use(`/${name}`,require(`./${name}.js`))
     
 })

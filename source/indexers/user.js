@@ -1,20 +1,24 @@
 indexUser = [
     {
         method  : "post",
-        service : "Cuser"
+        service : "Cuser",
+        path    : ""
     },
     {
         method  : "get",
-        service : "Ruser"
+        service : "Ruser",
+        path    : ""
     },
     {
-        method  : "patch",
-        service : "Uuser"
+        method  : "put",
+        service : "Uuser",
+        path    : ""
     },
     {
         method  : "delete",
-        service : "Duser"
+        service : "Duser",
+        path    : ""
     },
 ]
 
-module.exports = indexUser
+module.exports = {indexer:indexUser, path:"user"}

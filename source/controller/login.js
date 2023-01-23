@@ -1,7 +1,11 @@
 const userModel = require("../models/user")
 const bcrypt = require('bcrypt')
 const jose = require('jose')
+const colors = require('colors')
+
 require("dotenv").config() 
+
+colors.enable()
 
 const oauth = (body,res) => {
 
@@ -21,9 +25,19 @@ const oauth = (body,res) => {
                     .setExpirationTime('8h')
                     .sign(secret);
                   
-                  jwt.then((data) => res.send('Bearer ' + data))
+                  jwt.then((data) => {
+                    if(Boolean(process.env.LOG)){
+                        console.log(colors.green("[OK] user logged"))
+                    }
+
+                    res.send('Bearer ' + data)
+                })
             }else{
                 res.send("no puede ingresar")
+                if(Boolean(process.env.LOG)){
+                    console.log(colors.yellow("[WARNING] user incorrect"))
+                }
+
             }
         })
 }
