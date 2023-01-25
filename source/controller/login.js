@@ -12,32 +12,27 @@ const oauth = (body,res) => {
     userModel.findOne({
         email : body.email
         },(error, doc) => {
-            const equal = bcrypt.compareSync(body.passwd, doc.passwd)
 
-            if(equal){
-                
-                const secret = new TextEncoder().encode(
-                    process.env.JWT_SECRET
-                  );
-                
-                  const jwt =  new jose.SignJWT({doc})
-                    .setProtectedHeader({ alg: "HS256" })
-                    .setExpirationTime('8h')
-                    .sign(secret);
-                  
-                  jwt.then((data) => {
-                    if(Boolean(process.env.LOG)){
-                        console.log(colors.green("[OK] user logged"))
-                    }
+            if(doc !== null){
+                const equal = bcrypt.compareSync(body.passwd, doc.passwd)
 
-                    res.send('Bearer ' + data)
-                })
-            }else{
-                res.send("no puede ingresar")
-                if(Boolean(process.env.LOG)){
-                    console.log(colors.yellow("[WARNING] user incorrect"))
+                if(equal){
+                    
+                    const secret = new TextEncoder().encode(
+                        process.env.JWT_SECRET
+                      );
+                    
+                      const jwt =  new jose.SignJWT({doc})
+                        .setProtectedHeader({ alg: "HS256" })
+                        .setExpirationTime('8h')
+                        .sign(secret);
+                      
+                      jwt.then((data) => res.send('Bearer ' + data))
+                }else{
+                    res.send("no puede ingresar")
                 }
-
+            }else{
+                res.send("No existe el usuario")
             }
         })
 }
