@@ -31,8 +31,16 @@ const find = (model, id, res) => {
     model.findById(id,(err, doc) => {Error.errorHandler(err, res, ERRORMSG, doc)})
 }
 
-const Update = (args) => {
-    const {model, body, id, res , msg} = args
+/**
+ * @param {mongoose.model} model modelo con que se busca el registro
+ * @param {string} id id con el que se registro en la db 
+ * @param {*} res respuesta
+ * @param {object} body informacion que se ingresa
+ * @param {*} msg mensaje de actuliazacion en la respuesta
+ */
+
+const Update = (model, body, id, res , msg) => {
+    
     model.findByIdAndUpdate(id, {$set : body}, (error, doc) => {
         if(res){
             Error.errorHandler(error, res, ERRORMSG, msg)
