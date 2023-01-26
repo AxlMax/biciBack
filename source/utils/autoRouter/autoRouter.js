@@ -45,6 +45,10 @@ const autoRouter = (indexer, services, middleware) => {
                 if(value.method == "post"){
                     console.log(colors.green(`[${value.method.toUpperCase()}]\t \t${path}`))
                 }
+
+                if(value.method == "patch"){
+                    console.log(colors.gray(`[${value.method.toUpperCase()}]\t \t${path}`))
+                }
             }
 
             if (Object.keys(value).length == 3 && value.service != "oauth"){

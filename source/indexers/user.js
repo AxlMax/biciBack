@@ -19,6 +19,11 @@ indexUser = [
         service : "Duser",
         path    : ""
     },
+    {
+        method : "patch",
+        service : "LinkBici",
+        path    : "LinkBici"
+    }
 ]
 
 module.exports = {indexer:indexUser, path:"user"}

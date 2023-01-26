@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
+
 const joi = require('joi');
 const bcrypt = require('bcrypt-nodejs')
 
@@ -24,18 +26,9 @@ const userSchema = new mongoose.Schema({
         type    : String,
         default : "unassigned"
     },
-
-    id_ambulancia : {
-        type: Array,
-        default : []
-    },
-    id_gps :{
-        type : Array,
-        default : []
-    },
-    created: { 
-        type: Date, 
-        default: Date.now 
+    bici:{
+        type: Schema.Types.ObjectId,
+        ref : "bici",
     }
 }, { versionKey: false })
 

@@ -9,7 +9,12 @@ const estacionesSchemma =  new mongoose.Schema({
     ubicacion : {
         lat:Number,
         lon:Number
-    }
+    },
+    bicis : [{
+        type : mongoose.Types.ObjectId,
+        unique : true,
+        ref  : "bici"
+    }]
 },{ versionKey: false });
 
 module.exports = mongoose.model('Estacion', estacionesSchemma)

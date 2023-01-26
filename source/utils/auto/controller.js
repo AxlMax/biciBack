@@ -1,7 +1,9 @@
-const {Schema, default: mongoose } = require('mongoose')
+const mongoose = require('mongoose')
+const colors = require("colors")
 const Error = require('../error/errorHandler')
 const ERRORMSG = "error CONTROLADOR"
 
+colors.enable()
 /**
  * 
  * @param {mongoose.model} model modelo con el que se crea el registro
@@ -44,6 +46,9 @@ const Update = (model, body, id, res , msg) => {
     model.findByIdAndUpdate(id, {$set : body}, (error, doc) => {
         if(res){
             Error.errorHandler(error, res, ERRORMSG, msg)
+        }
+        if(doc ==  null){
+            res.status(400).send("No found id")
         }
     })
 }
@@ -121,17 +126,53 @@ const Delete = (args) => {
  * @param res la respuesta que se dara al usuario 
  */
 
-const Link = (args) => {
-    const {model, idc, idl, key, res} = args
+
+/**
+ * @param {mongoose.model} model modelo con que se busca el registro
+ * @param {string} id  id con el que se registro en la db 
+ * @param {string} idi id a ser ingresado en la relacion
+ * @param {string} space nombre del espacio en base de datos donde se ingresara el id 
+ * @param {*} res respuesta
+ * @param {object} body informacion que se ingresa
+ */
+
+const Link = (model, id, idi, space ,res) => {
 
     if(process.env.LOG == 'true'){
-        console.log(`Link ${idc} ${key}`)
+        console.log(colors.yellow(`[QUERY] Link ${id}`))
     }
-   
-    model.findById(idc, (error, doc) => {
-        
-        doc?.[key].push(idl)
-        Error.errorSaving(doc, res)
+
+    let body = {}
+    body[space] = mongoose.Types.ObjectId()
+    
+    model.findByIdAndUpdate(id, {$set : body}, (error, doc) => {
+        if(res){
+            Error.errorHandler(error, res, ERRORMSG, "LINK OK")
+        }
+
+        if(doc ==  null){
+            res.status(400).send("No found id")
+        }
+    })
+}
+
+const LinkA = (model, id, idi, space ,res) => {
+
+    if(process.env.LOG == 'true'){
+        console.log(colors.yellow(`[QUERY] LinkA ${id}`))
+    }
+
+    let body = {}
+    body[space] = mongoose.Types.ObjectId()
+    
+    model.findByIdAndUpdate(id, {$set : body}, (error, doc) => {
+        if(res){
+            Error.errorHandler(error, res, ERRORMSG, "LINK OK")
+        }
+
+        if(doc ==  null){
+            res.status(400).send("No found id")
+        }
     })
 }
 
@@ -175,4 +216,4 @@ const Rlink = (args) => {
     })
 }
 
-module.exports = {create, find, Update, Delete, Link, Rlink}
+module.exports = {create, find, Update, Delete, Link, LinkA, Rlink}
