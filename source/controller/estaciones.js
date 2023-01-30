@@ -5,4 +5,7 @@ const Cestaciones = (body, res)     => auto.create(estacionesModel, body, res, "
 const Restaciones = (id, res)       => auto.find(estacionesModel, id, res)
 const Uestaciones = (id, body, res) => auto.Update(estacionesModel, body, id, res, "estaciones actualizado")
 
-module.exports = {Cestaciones, Restaciones, Uestaciones}
+const LinkBici    = (id, idi, res)  => auto.LinkA(estacionesModel, id, idi, "bicis", res, "ERROR LINK bici")
+
+
+module.exports = {Cestaciones, Restaciones, Uestaciones, LinkBici}

@@ -133,7 +133,7 @@ const Delete = (args) => {
  * @param {string} idi id a ser ingresado en la relacion
  * @param {string} space nombre del espacio en base de datos donde se ingresara el id 
  * @param {*} res respuesta
- * @param {object} body informacion que se ingresa
+ * @description funcion para ingresar id dentro de un documento
  */
 
 const Link = (model, id, idi, space ,res) => {
@@ -143,7 +143,7 @@ const Link = (model, id, idi, space ,res) => {
     }
 
     let body = {}
-    body[space] = mongoose.Types.ObjectId()
+    body[space] = mongoose.Types.ObjectId(idi)
     
     model.findByIdAndUpdate(id, {$set : body}, (error, doc) => {
         if(res){
@@ -156,6 +156,16 @@ const Link = (model, id, idi, space ,res) => {
     })
 }
 
+
+/**
+ * @param {mongoose.model} model modelo con que se busca el registro
+ * @param {string} id  id con el que se registro en la db 
+ * @param {string} idi id a ser ingresado en la relacion
+ * @param {string} space nombre del espacio en base de datos donde se ingresara el id 
+ * @param {*} res respuesta
+ * @description funcion para ingresar id a un array de ids dentro de un documento
+ */
+
 const LinkA = (model, id, idi, space ,res) => {
 
     if(process.env.LOG == 'true'){
@@ -163,9 +173,9 @@ const LinkA = (model, id, idi, space ,res) => {
     }
 
     let body = {}
-    body[space] = mongoose.Types.ObjectId()
+    body[space] = mongoose.Types.ObjectId(idi)
     
-    model.findByIdAndUpdate(id, {$set : body}, (error, doc) => {
+    model.findByIdAndUpdate(id, {$push : body}, (error, doc) => {
         if(res){
             Error.errorHandler(error, res, ERRORMSG, "LINK OK")
         }

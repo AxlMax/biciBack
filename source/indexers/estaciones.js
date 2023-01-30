@@ -14,6 +14,11 @@ indexestaciones = [
         service : "Uestaciones",
         path    : "Uestaciones"
     },
+    {
+        method  : "patch",
+        service : "LinkBici",
+        path    : "LinkBiciE"
+    },
 ]
 
 module.exports = {indexer:indexestaciones, path:"estaciones"}
