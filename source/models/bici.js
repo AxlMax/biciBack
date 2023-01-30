@@ -6,14 +6,21 @@ const biciSchemma =  new mongoose.Schema({
         type: Schema.Types.ObjectId, 
         ref: 'Estacion' 
     },
+
     uso : {
         estado : Boolean,
         user   : {
             type : Schema.Types.ObjectId,
             ref  : 'user'
         }
-    }
+    },
+
+    placa : {
+        type     : String,
+        required : true
+    },
+
 },{ versionKey: false });
 
 
-module.exports = mongoose.model('bici', biciSchemma)
+module.exports = mongoose.model('Bici', biciSchemma)

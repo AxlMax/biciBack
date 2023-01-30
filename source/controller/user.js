@@ -89,6 +89,8 @@ const Duser = (id, res) => {
 
 const LinkBici = (id, idi, res) => auto.Link(userModel, id, idi, "bici", res, "ERROR LINK bici")
 
+const GetBici = (id, res) => auto.Rlink(id, userModel, "biciId", res)
+
 module.exports = {
-    Cuser, Ruser, Uuser, Duser, LinkBici
+    Cuser, Ruser, Uuser, Duser, LinkBici, GetBici
 }

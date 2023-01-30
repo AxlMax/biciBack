@@ -23,6 +23,11 @@ indexUser = [
         method : "patch",
         service : "LinkBici",
         path    : "LinkBici"
+    },
+    {
+        method : "get",
+        service : "GetBici",
+        path    : "GetBici"
     }
 ]
 

@@ -29,7 +29,7 @@ const create = (model, body, res, logInfo) => {
  * @param {*} res respuesta
  */
 const find = (model, id, res) => {
-    console.log(id)
+    
     model.findById(id,(err, doc) => {Error.errorHandler(err, res, ERRORMSG, doc)})
 }
 
@@ -189,40 +189,22 @@ const LinkA = (model, id, idi, space ,res) => {
 /**
  * esta funcion es para obtener la informacion que se encuentre linkiada a un registro
  * 
- * @param  idc    este es el id que se va ha consultar
- * @param  modelc este es el modelo que se utiliza para buscar la id
- * @param  keyc   la llave del array de ids
- * @param  modell modelo que se quiere obtener la informacion
+ * @param  id   este es el id que se va ha consultar
+ * @param  model este es el modelo que se utiliza para buscar la id
+ * @param  key   la llave del array de ids
  * @param  res    response
  */
 
-const Rlink = (args) => {
+const Rlink = (id, model, key, res) => {
+    model.findById(id).
+    populate(key).
+    exec(function(err, doc){
 
-    const {idc, modelc, modell, keyc, res} = args
-
-    if(process.env.LOG == 'true'){
-        console.log(`Rlink ${idc} ${keyc}`)
-    }
-
-    modelc.findById(idc, (error, doc) => {
-    
-        const idKeys = doc?.[keyc]
-
-        let resolveKeys = []
-
-            if(idKeys){
-                idKeys.map(async(v, i) => {
-                    const data =  await modell.findById(v)
-                    resolveKeys.push(data)
-                    
-    
-                    if(resolveKeys.length == idKeys.length){
-                        res.send(200, resolveKeys)
-                    }
-                })
-            }else{
-                res.send(200, resolveKeys)
-            }
+        if(doc[key] !== null){
+            res.status(200).send(doc[key])
+        }else{
+            res.status(500).send("no tiene registro")
+        }
     })
 }
 

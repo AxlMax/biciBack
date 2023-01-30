@@ -22,7 +22,8 @@ const Duser = (req, res) => {
 }
 
 const LinkBici = (req, res) => controllerUser.LinkBici(request.Query(req,'id'), request.Query(req,'idi') , res)
+const GetBici = (req, res) => controllerUser.GetBici(request.Query(req,'id'), res)
 
 module.exports = {
-    Cuser, Ruser, Uuser, Duser, LinkBici
+    Cuser, Ruser, Uuser, Duser, LinkBici, GetBici
 }

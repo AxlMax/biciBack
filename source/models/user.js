@@ -26,9 +26,9 @@ const userSchema = new mongoose.Schema({
         type    : String,
         default : "unassigned"
     },
-    bici:{
+    biciId:{
         type: Schema.Types.ObjectId,
-        ref : "bici",
+        ref : "Bici",
     }
 }, { versionKey: false })
 
