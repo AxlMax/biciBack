@@ -10,7 +10,7 @@ indexBici = [
     {
         method  : "put",
         service : "Ubici",
-    },
+    }
 ]
 
 module.exports = {indexer:indexBici, path:"bici"}

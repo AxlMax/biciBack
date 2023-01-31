@@ -12,8 +12,7 @@ const estacionesSchemma =  new mongoose.Schema({
     },
     bicis : [{
         type : mongoose.Types.ObjectId,
-        unique : true,
-        ref  : "bici"
+        ref  : "Bici"
     }]
 },{ versionKey: false });
 

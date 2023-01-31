@@ -1,12 +1,14 @@
 const mongoose = require('mongoose')
 const colors = require("colors")
 const Error = require('../error/errorHandler')
+const models = require('../../models/index')
+
 const ERRORMSG = "error CONTROLADOR"
 
 colors.enable()
 /**
  * 
- * @param {mongoose.model} model modelo con el que se crea el registro
+ * @param {string} model modelo con el que se crea el registro
  * @param {object} body informacion que se ingresa
  * @param {string} res respuesta
  * @param {string} logInfo informacion de mas para el log
@@ -18,23 +20,23 @@ const create = (model, body, res, logInfo) => {
         console.log(`Create ${logInfo} ${body}`)
     }
 
-    const document = new model(body)
+    const document = new models[model](body)
     Error.errorSaving(document, res)
 
 }
 /**
  * 
- * @param {mongoose.model} model modelo con que se busca el registro
+ * @param {string} model modelo con que se busca el registro
  * @param {string} id id con el que se registro en la db 
  * @param {*} res respuesta
  */
 const find = (model, id, res) => {
     
-    model.findById(id,(err, doc) => {Error.errorHandler(err, res, ERRORMSG, doc)})
+    models[model].findById(id,(err, doc) => {Error.errorHandler(err, res, ERRORMSG, doc)})
 }
 
 /**
- * @param {mongoose.model} model modelo con que se busca el registro
+ * @param {string} model modelo con que se busca el registro
  * @param {string} id id con el que se registro en la db 
  * @param {*} res respuesta
  * @param {object} body informacion que se ingresa
@@ -43,7 +45,7 @@ const find = (model, id, res) => {
 
 const Update = (model, body, id, res , msg) => {
     
-    model.findByIdAndUpdate(id, {$set : body}, (error, doc) => {
+    models[model].findByIdAndUpdate(id, {$set : body}, (error, doc) => {
         if(res){
             Error.errorHandler(error, res, ERRORMSG, msg)
         }
@@ -117,18 +119,7 @@ const Delete = (args) => {
 }
 
 /**
- * 
- * @param {*} args
- * @param model modelo al cual se va vincular la informacion
- * @param idc id del registro al cual se le vinculara el id
- * @param idl id del registro que sera vinculado
- * @param key nombre del array en el cual se almacenara el registro del id
- * @param res la respuesta que se dara al usuario 
- */
-
-
-/**
- * @param {mongoose.model} model modelo con que se busca el registro
+ * @param {string} model modelo con que se busca el registro
  * @param {string} id  id con el que se registro en la db 
  * @param {string} idi id a ser ingresado en la relacion
  * @param {string} space nombre del espacio en base de datos donde se ingresara el id 
@@ -145,7 +136,7 @@ const Link = (model, id, idi, space ,res) => {
     let body = {}
     body[space] = mongoose.Types.ObjectId(idi)
     
-    model.findByIdAndUpdate(id, {$set : body}, (error, doc) => {
+    models[model].findByIdAndUpdate(id, {$set : body}, (error, doc) => {
         if(res){
             Error.errorHandler(error, res, ERRORMSG, "LINK OK")
         }
@@ -158,7 +149,7 @@ const Link = (model, id, idi, space ,res) => {
 
 
 /**
- * @param {mongoose.model} model modelo con que se busca el registro
+ * @param {string} model modelo con que se busca el registro
  * @param {string} id  id con el que se registro en la db 
  * @param {string} idi id a ser ingresado en la relacion
  * @param {string} space nombre del espacio en base de datos donde se ingresara el id 
@@ -174,16 +165,20 @@ const LinkA = (model, id, idi, space ,res) => {
 
     let body = {}
     body[space] = mongoose.Types.ObjectId(idi)
-    
-    model.findByIdAndUpdate(id, {$push : body}, (error, doc) => {
-        if(res){
-            Error.errorHandler(error, res, ERRORMSG, "LINK OK")
-        }
 
-        if(doc ==  null){
-            res.status(400).send("No found id")
-        }
-    })
+    if(id != null && idi != null){
+        models[model].findByIdAndUpdate(id, {$addToSet : body}, (error, doc) => {
+            if(res){
+                Error.errorHandler(error, res, ERRORMSG, "LINK OK")
+            }
+    
+            if(doc ==  null){
+                res.status(400).send("No found id")
+            }
+        })
+    }else{
+        res.status(400).send("id o idi no presentados")
+    }
 }
 
 /**
@@ -195,17 +190,30 @@ const LinkA = (model, id, idi, space ,res) => {
  * @param  res    response
  */
 
-const Rlink = (id, model, key, res) => {
-    model.findById(id).
-    populate(key).
-    exec(function(err, doc){
+const Rlink = (model,id, key, res) => {
 
-        if(doc[key] !== null){
-            res.status(200).send(doc[key])
-        }else{
-            res.status(500).send("no tiene registro")
-        }
-    })
+    if(process.env.LOG == 'true'){
+        console.log(colors.yellow(`[QUERY] Rlink ${id}`))
+    }
+
+    if(id != null) {
+        models[model].findById(id).
+        populate(key).
+        exec(function(err, doc){
+    
+            if(doc !== null){
+                if(doc[key] !== null){
+                    res.status(200).send(doc[key])
+                }else{
+                    res.status(500).send("no tiene registro")
+                }
+            }else{
+                res.status(400).send("documento no encontrado")
+            }
+        })
+    }else{
+        res.status(400).send("id no presentado")
+    }
 }
 
 module.exports = {create, find, Update, Delete, Link, LinkA, Rlink}
