@@ -10,6 +10,10 @@ indexBici = [
     {
         method  : "put",
         service : "Ubici",
+    },
+    {
+        method  : "delete",
+        service : "Dbici",
     }
 ]
 

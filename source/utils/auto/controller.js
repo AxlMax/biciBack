@@ -45,7 +45,12 @@ const find = (model, id, res) => {
 
 const Update = (model, body, id, res , msg) => {
     
+    if(process.env.LOG == 'true'){
+        console.log(colors.yellow(`[QUERY] update ${id}`))
+    }
+    
     models[model].findByIdAndUpdate(id, {$set : body}, (error, doc) => {
+        
         if(res){
             Error.errorHandler(error, res, ERRORMSG, msg)
         }
@@ -56,66 +61,47 @@ const Update = (model, body, id, res , msg) => {
 }
 /**
  * 
- * @param {*} args
- * @param {mongoose.Schema.model} model es el modelo que realizara las operaciones a la base de datos
- * @param {string} id es el id del registro dentro de la base de datos
- * @param {string} key como se encuentra regsitrada la id en los registros relacionados ejemplo id_gps para gps dentro de user
- * @param {string} msg mensaje de finalizacion   
+ * @param {string} model es el modelo que realizara las operaciones a la base de datos
+ * @param {string} id es el id del registro dentro de la base de datos    
  */
 
-const Delete = (args) => {
-    const {model, id, res, key,msg} = args
+const Delete = (model, id, res) => {
 
-    if(process.env.LOG == 'true'){
-        console.log(`Delete ${id} ${key}`)
-    }
+    /**
+     * modelR modelo raiz
+     * modelO modelo operaciones los que se encuentra realcionados
+     */
+    
+    const {modelR, modelO} = model
 
-    model.findById(id, (error, doc) => {
-        doc['relation'].map((value, index) => {
-            const relationModel = require(`../../models/${value}`)
+    modelO.forEach(modeli => {
+        const filter = {}
+        filter[modeli.key] = id
+
+        models[modeli.model].find(filter, (err, doc) => {
             
-            const filter = {}
-            filter[key] = id
+            doc.forEach(doci => {
+                const body = {}
 
-            relationModel.find(filter, (error, docR) => {
-                if(docR.length > 0){
-                    docR.map((value, index) => {
-
-                        let auxid = [] 
-
-                        value[key].map((v,i) => {
-                            if(v != id){
-                                auxid.push(v)
-                            }
-                        })
-
-                        value[key] = auxid
-
-                        let valueUpdate = {}
-                        let idU
-
-                        Object.keys(value['_doc']).map((vu,iu) => {
-                            if(vu != "_id"){
-                                valueUpdate[vu] = value['_doc'][vu]
-                            }else{
-                                idU = value['_doc']["_id"].toString() 
-                            }
-
-                        })
-
-                        Update({
-                            "model" : relationModel,
-                            "body"  : valueUpdate,
-                            "id"    : idU
-                        })
-                    })   
+                if(Array.isArray(doci?.[modeli.key]) ==  true){
+                    const filterArray = doci?.[modeli.key].filter(ids => ids != id)
+                    body[modeli.key] = filterArray
+                }else{
+                    body[modeli.key] = null
                 }
+
+                Update(modeli.model, body, doci["_id"])
             })
         })
+    });
 
-    model.findByIdAndDelete(id, (err, doc) => Error.errorHandler(err, res, ERRORMSG, msg))
-    
-    })
+
+    if(process.env.LOG == 'true'){
+        console.log(colors.yellow(`[QUERY] Delete ${id}`))
+    }
+
+    res.send("OK")
+    //models[modelR].findByIdAndDelete(id, (err, doc) => Error.errorHandler(err, res, ERRORMSG, "delete ok"))
 }
 
 /**
